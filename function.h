@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <GLFW/glfw3.h>
+#include <math.h>
 
 #define SCREEN_WIDTH 600
 #define SCREEN_HEIGHT 600
@@ -11,3 +12,5 @@
 #define SCREEN_OFFSET_Y (SCREEN_HEIGHT / 2)
 
 #endif
+
+void DrawPlanet(float x, float y, float radius, int reso);

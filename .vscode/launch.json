@@ -7,9 +7,9 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "externalConsole": true,
-      "cwd": "c:/Users/dario/dario/Projects/gravity-simulation",
-      "program": "c:/Users/dario/dario/Projects/gravity-simulation/build/Debug/outDebug",
+      "externalConsole": false,
+      "cwd": "/home/darioguidi/Desktop/Projects/gravity-simulation",
+      "program": "/home/darioguidi/Desktop/Projects/gravity-simulation/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

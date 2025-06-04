@@ -1,10 +1,14 @@
 #include "function.h"
 
+// Funzione per disegnare un singolo pianeta
 void DrawPlanet(float x, float y, float radius, int reso)
 {
+    // Disegna un triangolo
     glBegin(GL_TRIANGLE_FAN);
+    // Identifica il centro del raggio
     glVertex2f(x, y);
     for(int i = 0; i <= reso; i++) {
+        // Disegna i vertici del cerchio come vertici di triangoli
         float angle = 2.0f * 3.14159265358979323846 * ((float)i / reso);
         float xv = x + cosf(angle) * radius;
         float yv = y + sinf(angle) * radius;
@@ -13,29 +17,30 @@ void DrawPlanet(float x, float y, float radius, int reso)
     glEnd();
 }
 
+// Funzione per trasformare posizione deipianeti in base alla forza gravitazionale
 void DrawPlanets(Planet *planets, int number_planets)
 {
     for (int i = 0; i < number_planets; i++) {
         Planet *p = &planets[i];
-        p->x += p->velocity_x;
-        p->y += p->velocity_y;
+        p->x += p->velocity_x * DT;
+        p->y += p->velocity_y * DT;
 
-    if (p->x - p->radius < 0) {
-        p->x = p->radius;
-        p->velocity_x *= -0.95f;
-    }
-    if (p->x + p->radius > SCREEN_WIDTH) {
-        p->x = SCREEN_WIDTH - p->radius;
-        p->velocity_x *= -0.95f;
-    }
-    if (p->y - p->radius < 0) {
-        p->y = p->radius;
-        p->velocity_y *= -0.95f;
-    }
-    if (p->y + p->radius > SCREEN_HEIGHT) {
-        p->y = SCREEN_HEIGHT - p->radius;
-        p->velocity_y *= -0.95f;
-    }
+        if (p->x - p->radius < 0) {
+            p->x = p->radius;
+            p->velocity_x *= -0.8f;
+        }
+        if (p->x + p->radius > SCREEN_WIDTH) {
+            p->x = SCREEN_WIDTH - p->radius;
+            p->velocity_x *= -0.8f;
+        }
+        if (p->y - p->radius < 0) {
+            p->y = p->radius;
+            p->velocity_y *= -0.8f;
+        }
+        if (p->y + p->radius > SCREEN_HEIGHT) {
+            p->y = SCREEN_HEIGHT - p->radius;
+            p->velocity_y *= -0.8f;
+        }
     }
 
     for (int i = 0; i < number_planets; i++) {
@@ -45,18 +50,21 @@ void DrawPlanets(Planet *planets, int number_planets)
 
             float dx = p1->x - p2->x;
             float dy = p1->y - p2->y;
-            float dist_sq = dx*dx + dy*dy + EPS;
+
+            float softening = 1.0f;
+            float dist_sq = dx*dx + dy*dy + softening*softening;
             float dist = sqrt(dist_sq);
 
             float Gforce = (G * p1->mass * p2->mass) / dist_sq;
             float forceX = Gforce * (dx / dist);
             float forceY = Gforce * (dy / dist);
 
-            p1->velocity_x -= forceX / p1->mass;
-            p1->velocity_y -= forceY / p1->mass;
-            p2->velocity_x += forceX / p2->mass;
-            p2->velocity_y += forceY / p2->mass;
+            p1->velocity_x -= (forceX / p1->mass) * DT;
+            p1->velocity_y -= (forceY / p1->mass) * DT;
+            p2->velocity_x += (forceX / p2->mass) * DT;
+            p2->velocity_y += (forceY / p2->mass) * DT;
 
+            // collisioni
             if (dist <= p1->radius + p2->radius) {
                 float nx = dx / dist;
                 float ny = dy / dist;
@@ -90,17 +98,38 @@ void DrawPlanets(Planet *planets, int number_planets)
 }
 
 
-void set_orbital_velocity(Planet *central, Planet *orbiting) 
+void set_orbital_velocity(Planet *planets, int number_planets) 
 {
-    float dx = orbiting->x - central->x;
-    float dy = orbiting->y - central->y;
-    float distance = sqrt(dx*dx + dy*dy) + 1e-6f; // evita divisione per zero
+    Planet *central = centralPlanet(planets, number_planets);
+    for (int j = 0; j < number_planets; j++) {
+        Planet *orbiting = &planets[j];
+        
+        // Se coincidono salta il loop
+        if(central == orbiting) continue;
 
-    float v = sqrt(G * central->mass / distance);
+        float dx = orbiting->x - central->x;
+        float dy = orbiting->y - central->y;
+        float distance = sqrt(dx*dx + dy*dy) + 1e-6f; // evita divisione per zero
+    
+        float v = sqrt(G * central->mass / distance);
+    
+        float vx = -dy / distance * v; // velocità tangenziale (perpendicolare a r)
+        float vy = dx / distance * v;
+    
+        orbiting->velocity_x = vx;
+        orbiting->velocity_y = vy;
+    }
+}
 
-    float vx = -dy / distance * v; // velocità tangenziale (perpendicolare a r)
-    float vy = dx / distance * v;
-
-    orbiting->velocity_x = vx;
-    orbiting->velocity_y = vy;
+Planet* centralPlanet(Planet *planets, int number_planets) 
+{
+    Planet *p = NULL;
+    float max_value_mass =0;
+    for(int i=0; i<number_planets;i++){
+        if(planets[i].mass>max_value_mass){
+            max_value_mass=planets[i].mass;
+            p=&planets[i];
+        }
+    }
+    return p;
 }

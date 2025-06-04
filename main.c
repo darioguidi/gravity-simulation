@@ -2,7 +2,9 @@
 
 int main(int /*argc*/, char* /*argv*/[])
 {
-    int number_planets, resolution, d=0;
+    srand((unsigned int)time(NULL));
+
+    int number_planets, resolution=20, d=0;
     float radius, mass;
 
     printf("Quanti pianeti vuo irappresentare?\n");
@@ -15,9 +17,11 @@ int main(int /*argc*/, char* /*argv*/[])
         scanf("%f", &radius);
         printf("Inserire la massa del corpo:\n");
         scanf("%f", &mass);
-        printf("Inserire la risoluzione del corpo:\n");
-        scanf("%d", &resolution);
-        *(planets+j) = (Planet) {SCREEN_OFFSET_X+d, SCREEN_OFFSET_Y+d, radius, mass, 0.0f, 0.0f, resolution};
+
+        float x = (float)(rand() % SCREEN_WIDTH);
+        float y = (float)(rand() % SCREEN_HEIGHT);
+        
+        *(planets+j) = (Planet) {x, y, radius, mass, 0.0f, 0.0f, resolution};
         d+=100;
     }
 

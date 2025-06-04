@@ -23,8 +23,6 @@ void DrawPlanets(Planet *planets, int number_planets)
         p->x += p->velocity_x;
         p->y += p->velocity_y;
 
-        p->velocity_y -= 0.05f;
-
         if(p->x<0 || p->x > SCREEN_WIDTH){
             p->velocity_x *= -0.95f;
         }
@@ -32,16 +30,26 @@ void DrawPlanets(Planet *planets, int number_planets)
         if(p->y<0 || p->y > SCREEN_HEIGHT){
             p->velocity_y *= -0.95f;
         }
-/*
-    for (int i = 0; i < number_planets; i++) {
+
         for (int j = 0; j < number_planets; j++) {
+            Planet *pv = &planets[j];
+
             if (i != j) {
-                float Gforce = (G * p->mass * (planets+j)->mass)/(p->radius*p->radius);
+                float dx = p->x - pv->x;
+                float dy = p->y - pv->y;
+
+                float distance_squared = (dx*dx) + (dy*dy) + EPS;
+                float distance = sqrt(distance_squared);
+
+                float Gforce = (G * p->mass * pv->mass)/distance_squared;
+
+                float forceX = Gforce * (dx/distance);
+                float forceY = Gforce * (dy/distance);
+
+                p->velocity_x -= forceX / p->mass;
+                p->velocity_y -= forceY / p->mass;
             }
         }
-    }*/
-
-
-}
+    }
 }
 

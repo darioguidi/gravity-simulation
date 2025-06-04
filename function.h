@@ -5,12 +5,14 @@
 #include <stdlib.h>
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <time.h>
 
-#define SCREEN_WIDTH 600
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 900
+#define SCREEN_HEIGHT 900
 #define SCREEN_OFFSET_X (SCREEN_WIDTH / 2)
 #define SCREEN_OFFSET_Y (SCREEN_HEIGHT / 2)
-#define G 6.67430e-11
+#define G 20.0f
+#define EPS 0.01f
 
 typedef struct {
     float x;

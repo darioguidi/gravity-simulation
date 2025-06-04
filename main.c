@@ -2,14 +2,24 @@
 
 int main(int /*argc*/, char* /*argv*/[])
 {
-    float raggio;
-    int reso = 40;
+    int number_planets, resolution, d=0;
+    float radius, mass;
 
-    printf("Inserire il raggio del corpo:\n");
-    scanf("%f", &raggio);
+    printf("Quanti pianeti vuo irappresentare?\n");
+    scanf("%d", &number_planets);
 
-    float position[2] = {SCREEN_OFFSET_X, SCREEN_OFFSET_Y};
-    float velocity[2] = {0.0f,0.0f};
+    Planet *planets = malloc(number_planets*sizeof(Planet));
+
+    for(int j=0;j<number_planets;j++){
+        printf("Inserire il raggio del corpo:\n");
+        scanf("%f", &radius);
+        printf("Inserire la massa del corpo:\n");
+        scanf("%f", &mass);
+        printf("Inserire la risoluzione del corpo:\n");
+        scanf("%d", &resolution);
+        *(planets+j) = (Planet) {SCREEN_OFFSET_X+d, SCREEN_OFFSET_Y+d, radius, mass, 0.0f, 0.0f, resolution};
+        d+=100;
+    }
 
     if (!glfwInit()) {
         fprintf(stderr, "Errore nell'inizializzazione di GLFW\n");
@@ -47,23 +57,12 @@ int main(int /*argc*/, char* /*argv*/[])
 
         glColor3f(1.0f, 1.0f, 1.0f);  // colore bianco
         
-        DrawPlanet(position[0], position[1], raggio, reso);
+        DrawPlanets(planets, number_planets);
 
-        position[0] += velocity[0];
-        position[1] += velocity[1];
-        velocity[1] += -9.81/20.0f;
-
-        if (position[1]<0 || position[1]>SCREEN_HEIGHT){
-            velocity[1] *= -0.95;
-        }
-        if (position[0]<0 || position[0]>SCREEN_WIDTH){
-            velocity[1] *= -0.95;
-        }
-
-        printf("Velocità verticale: %.2f\n", velocity[1]);
         glfwSwapBuffers(window);
     }
 
+    free(planets);
     glfwDestroyWindow(window);
     glfwTerminate();
 

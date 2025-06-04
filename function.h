@@ -11,7 +11,7 @@
 #define SCREEN_HEIGHT 900
 #define SCREEN_OFFSET_X (SCREEN_WIDTH / 2)
 #define SCREEN_OFFSET_Y (SCREEN_HEIGHT / 2)
-#define G 20.0f
+#define G 40.0f
 #define EPS 0.01f
 
 typedef struct {
@@ -28,3 +28,4 @@ typedef struct {
 
 void DrawPlanet(float x, float y, float radius, int reso);
 void DrawPlanets(Planet *planets, int number_planets);
+void set_orbital_velocity(Planet *central, Planet *orbiting);

@@ -62,6 +62,8 @@ int main(int /*argc*/, char* /*argv*/[])
         glColor3f(1.0f, 1.0f, 1.0f);  // colore bianco
         
         DrawPlanets(planets, number_planets);
+        set_orbital_velocity(&planets[0], &planets[1]);
+
 
         glfwSwapBuffers(window);
     }

@@ -32,6 +32,16 @@ void DrawPlanets(Planet *planets, int number_planets)
         if(p->y<0 || p->y > SCREEN_HEIGHT){
             p->velocity_y *= -0.95f;
         }
-    }
+/*
+    for (int i = 0; i < number_planets; i++) {
+        for (int j = 0; j < number_planets; j++) {
+            if (i != j) {
+                float Gforce = (G * p->mass * (planets+j)->mass)/(p->radius*p->radius);
+            }
+        }
+    }*/
+
+
+}
 }
 

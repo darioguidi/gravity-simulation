@@ -10,6 +10,7 @@
 #define SCREEN_HEIGHT 600
 #define SCREEN_OFFSET_X (SCREEN_WIDTH / 2)
 #define SCREEN_OFFSET_Y (SCREEN_HEIGHT / 2)
+#define G 6.67430e-11
 
 typedef struct {
     float x;

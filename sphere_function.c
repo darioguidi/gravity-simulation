@@ -20,7 +20,7 @@ void DrawPlanet(float x, float y, float radius, int reso)
 // Funzione per trasformare posizione deipianeti in base alla forza gravitazionale
 void DrawPlanets(Planet *planets, int number_planets)
 {
-    for (int i = 0; i < number_planets; i++) {
+    for (int i = 1; i < number_planets; i++) {
         Planet *p = &planets[i];
         p->x += p->velocity_x * DT;
         p->y += p->velocity_y * DT;
@@ -98,38 +98,3 @@ void DrawPlanets(Planet *planets, int number_planets)
 }
 
 
-void set_orbital_velocity(Planet *planets, int number_planets) 
-{
-    Planet *central = centralPlanet(planets, number_planets);
-    for (int j = 0; j < number_planets; j++) {
-        Planet *orbiting = &planets[j];
-        
-        // Se coincidono salta il loop
-        if(central == orbiting) continue;
-
-        float dx = orbiting->x - central->x;
-        float dy = orbiting->y - central->y;
-        float distance = sqrt(dx*dx + dy*dy) + 1e-6f; // evita divisione per zero
-    
-        float v = sqrt(G * central->mass / distance);
-    
-        float vx = -dy / distance * v; // velocità tangenziale (perpendicolare a r)
-        float vy = dx / distance * v;
-    
-        orbiting->velocity_x = vx;
-        orbiting->velocity_y = vy;
-    }
-}
-
-Planet* centralPlanet(Planet *planets, int number_planets) 
-{
-    Planet *p = NULL;
-    float max_value_mass =0;
-    for(int i=0; i<number_planets;i++){
-        if(planets[i].mass>max_value_mass){
-            max_value_mass=planets[i].mass;
-            p=&planets[i];
-        }
-    }
-    return p;
-}

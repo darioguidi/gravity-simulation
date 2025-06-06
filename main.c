@@ -4,29 +4,43 @@ int main(int /*argc*/, char* /*argv*/[])
 {
     srand((unsigned int)time(NULL));
 
-    int number_planets, resolution=20;
+    int number_planets, resolution = 20;
     float radius, mass;
+
+    float mass_sun = 300000;
+    float radius_sun = 40;
 
     printf("Quanti pianeti vuoi rappresentare?\n");
     scanf("%d", &number_planets);
+    number_planets += 1;
 
-    Planet *planets = malloc(number_planets*sizeof(Planet));
+    Planet *planets = malloc(number_planets * sizeof(Planet));
+    *(planets) = (Planet) { SCREEN_OFFSET_X, SCREEN_OFFSET_Y, radius_sun, mass_sun, 0.0f, 0.0f, 50 };
 
     // Posizionamento casuale ma con margini per evitare sovrapposizioni iniziali
-    for(int j=0;j<number_planets;j++){
+    for (int j = 1; j < number_planets; j++) {
         printf("Inserire il raggio del corpo:\n");
         scanf("%f", &radius);
         printf("Inserire la massa del corpo:\n");
         scanf("%f", &mass);
 
-        float margin = radius * 3.0f; // margine per non sovrapporre i pianeti alle estremità
-        float x = margin + (float)(rand() % (SCREEN_WIDTH - (int)(2*margin)));
-        float y = margin + (float)(rand() % (SCREEN_HEIGHT - (int)(2*margin)));
+        float margin = radius * 3.0f;
+        float x = margin + (float)(rand() % (SCREEN_WIDTH+15 - (int)(2 * margin)));
+        float y = margin + (float)(rand() % (SCREEN_HEIGHT+15 - (int)(2 * margin)));
 
-        *(planets+j) = (Planet) {x, y, radius, mass, 0.0f, 0.0f, resolution};
+        float dx = x - SCREEN_OFFSET_X;
+        float dy = y - SCREEN_OFFSET_Y;
+        float r = sqrt(dx * dx + dy * dy);
+
+        float v_tan = sqrt((G * mass_sun) / r);
+
+        planets[j] = (Planet) {
+            x, y, radius, mass,
+            -dy / r * v_tan,   // componente x della velocità tangente
+             dx / r * v_tan,   // componente y della velocità tangente
+            resolution
+        };
     }
-
-    set_orbital_velocity(planets, number_planets);
 
     if (!glfwInit()) {
         fprintf(stderr, "Errore nell'inizializzazione di GLFW\n");
@@ -46,10 +60,14 @@ int main(int /*argc*/, char* /*argv*/[])
 
     glfwMakeContextCurrent(window);
 
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    // Usa la dimensione reale del framebuffer per il viewport
+    int fbWidth, fbHeight;
+    glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+    glViewport(0, 0, fbWidth, fbHeight);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -1, 1);
+    glOrtho(0, fbWidth, 0, fbHeight, -1, 1);  // 🔧 Adatta la proiezione
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -61,7 +79,7 @@ int main(int /*argc*/, char* /*argv*/[])
 
         glColor3f(1, 1, 1);
 
-        DrawPlanets(planets, number_planets);  // funzione modificata con DT
+        DrawPlanets(planets, number_planets);
 
         glfwSwapBuffers(window);
     }
@@ -71,4 +89,4 @@ int main(int /*argc*/, char* /*argv*/[])
     glfwTerminate();
 
     return 0;
-} 
+}

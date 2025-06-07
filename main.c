@@ -4,19 +4,16 @@ int main(int /*argc*/, char* /*argv*/[])
 {
     srand((unsigned int)time(NULL));
 
-    int number_planets, resolution = 20;
-    float radius, mass;
-
-    float mass_sun = 300000;
-    float radius_sun = 40;
+    int number_planets;
 
     printf("Quanti pianeti vuoi rappresentare?\n");
     scanf("%d", &number_planets);
     number_planets += 1;
 
     Planet *planets = malloc(number_planets * sizeof(Planet));
-    *(planets) = (Planet) { SCREEN_OFFSET_X, SCREEN_OFFSET_Y, radius_sun, mass_sun, 0.0f, 0.0f, 50 };
+    createSystem(planets, number_planets);
 
+    /*
     // Posizionamento casuale ma con margini per evitare sovrapposizioni iniziali
     for (int j = 1; j < number_planets; j++) {
         printf("Inserire il raggio del corpo:\n");
@@ -25,14 +22,14 @@ int main(int /*argc*/, char* /*argv*/[])
         scanf("%f", &mass);
 
         float margin = radius * 3.0f;
-        float x = margin + (float)(rand() % (SCREEN_WIDTH+15 - (int)(2 * margin)));
-        float y = margin + (float)(rand() % (SCREEN_HEIGHT+15 - (int)(2 * margin)));
+        float x = margin + (float)(rand() % (SCREEN_WIDTH+10 - (int)(2 * margin)));
+        float y = margin + (float)(rand() % (SCREEN_HEIGHT+10 - (int)(2 * margin)));
 
         float dx = x - SCREEN_OFFSET_X;
         float dy = y - SCREEN_OFFSET_Y;
         float r = sqrt(dx * dx + dy * dy);
 
-        float v_tan = sqrt((G * mass_sun) / r);
+        float v_tan = sqrt((G * MASS_SUN) / r);
 
         planets[j] = (Planet) {
             x, y, radius, mass,
@@ -40,7 +37,7 @@ int main(int /*argc*/, char* /*argv*/[])
              dx / r * v_tan,   // componente y della velocità tangente
             resolution
         };
-    }
+    }*/
 
     if (!glfwInit()) {
         fprintf(stderr, "Errore nell'inizializzazione di GLFW\n");

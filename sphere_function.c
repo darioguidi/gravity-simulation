@@ -97,4 +97,31 @@ void DrawPlanets(Planet *planets, int number_planets)
     }
 }
 
+void createSystem(Planet *system, int number_planets) {
+    system[0] = (Planet) {
+        SCREEN_OFFSET_X, SCREEN_OFFSET_Y,
+        RADIUS_SUN, MASS_SUN,
+        0.0f, 0.0f, 50
+    };
 
+    float base_radius = 80.0f;
+    float radius_growth = 1.3f;
+    float planet_radius = 8.0f;
+    float planet_mass = 1.0f;
+
+    for (int i = 1; i < number_planets; i++) {
+        float r = base_radius * powf(radius_growth, i - 1);
+        float angle = ((float)rand() / RAND_MAX) * 2.0f * 3.14f;
+        float x = SCREEN_OFFSET_X + r * cosf(angle);
+        float y = SCREEN_OFFSET_Y + r * sinf(angle);
+        float v_tan = sqrtf((G * MASS_SUN) / r);
+        float vx = -sinf(angle) * v_tan;
+        float vy = cosf(angle) * v_tan;
+
+        system[i] = (Planet) {
+            x, y, planet_radius, planet_mass,
+            vx, vy,
+            35
+        };
+    }
+}

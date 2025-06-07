@@ -105,8 +105,8 @@ void createSystem(Planet *system, int number_planets) {
     };
 
     float base_radius = 80.0f;
-    float radius_growth = 1.3f;
-    float planet_radius = 8.0f;
+    float radius_growth = 1.12f;
+    float planet_radius = 3.0f;
     float planet_mass = 1.0f;
 
     for (int i = 1; i < number_planets; i++) {
